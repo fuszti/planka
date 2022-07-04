@@ -1,12 +1,11 @@
 # This script handles the communication with planka
 # TODO: get about cards:
-# * members
 # * time/date of getting in WIP
 # * time/date of gettin in Done
 # * current column
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 import json
-from typing import Optional
+from typing import List, Optional
 import requests
 
 # Connection information
@@ -67,6 +66,7 @@ class Timer:
 class Card:
     title: str
     timer: Optional[Timer]
+    members: List[str] = field(default_factory=lambda : [])
 
 def get_cards_from_board(socket: SocketToKanbanBoard,
                          project_name: str,
@@ -76,13 +76,18 @@ def get_cards_from_board(socket: SocketToKanbanBoard,
     boards = socket.get(f'api/projects/{required_project_id}')['included']['boards']
     required_board_id = [board["id"] for board in boards if board['name'] == board_name][0]
     cards_content = socket.get(f'api/boards/{required_board_id}/cards')
-    cards = []
+    cards = {}
     for card_content in cards_content['items']:
         timer = Timer(card_content['timer']['total']) \
             if card_content['timer'] else None
         current_card = Card(card_content['name'], timer)
-        cards.append(current_card)
-    return cards
+        cards[card_content['id']] = current_card
+    for membership in cards_content['included']['cardMemberships']:
+        card_id = membership['cardId']
+        user_content = socket.get(f"api/users/{membership['userId']}")
+        username = user_content['item']['username']
+        cards[card_id].members.append(username)
+    return list(cards.values())
 
 if __name__ == '__main__':
     with SocketToKanbanBoard(baseURL, username, password) as socket:
