@@ -1,6 +1,16 @@
 version: '3'
 
 services:
+  grafana:
+    image: grafana/grafana-enterprise:8.2.0
+    ports:
+      - 3001:3000
+    user: '104'
+    depends_on:
+      - postgres
+    networks:
+      - planka-network
+
   planka:
     image: ghcr.io/plankanban/planka:latest
     command: >
@@ -25,6 +35,8 @@ services:
       - SECRET_KEY=notsecretkey
     depends_on:
       - postgres
+    networks:
+      - planka-network
 
   postgres:
     image: postgres:alpine
@@ -34,9 +46,14 @@ services:
     environment:
       - POSTGRES_DB=planka
       - POSTGRES_HOST_AUTH_METHOD=trust
+    networks:
+      - planka-network
 
 volumes:
   user-avatars:
   project-background-images:
   attachments:
   db-data:
+
+networks:
+  planka-network:
