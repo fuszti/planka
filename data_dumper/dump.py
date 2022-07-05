@@ -3,6 +3,7 @@
 # * time/date of getting in WIP
 # * time/date of gettin in Done
 # * current column
+import csv
 from dataclasses import dataclass, field
 import json
 from typing import List, Optional
@@ -89,7 +90,18 @@ def get_cards_from_board(socket: SocketToKanbanBoard,
         cards[card_id].members.append(username)
     return list(cards.values())
 
+def dump_into_csv(filename: str, cards: List[Card]):
+    header = ['name', 'timer_total_seconds']
+    with open(filename, 'w', encoding='UTF8') as csv_file:
+        writer = csv.writer(csv_file)
+        writer.writerow(header)
+        for card in cards:
+            total_seconds = 0 if card.timer is None else card.timer.total_seconds
+            datarow = [card.title, total_seconds]
+            writer.writerow(datarow)
+
+
 if __name__ == '__main__':
     with SocketToKanbanBoard(baseURL, username, password) as socket:
         cards = get_cards_from_board(socket, project_name, board_name)
-    print(cards)
+    dump_into_csv('/data/data_to_grafana.csv', cards)
