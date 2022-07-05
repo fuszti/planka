@@ -10,6 +10,11 @@ services:
       - postgres
     networks:
       - planka-network
+    volumes:
+      - ./data:/data
+      - "./grafana.ini:/etc/grafana/grafana.ini"
+    environment:
+      - GF_INSTALL_PLUGINS=marcusolsson-csv-datasource
 
   planka:
     image: ghcr.io/plankanban/planka:latest

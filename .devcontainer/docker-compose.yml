@@ -17,6 +17,7 @@ services:
 
     volumes:
       - ..:/workspace:cached
+      - ../data:/data
     networks:
       - planka_planka-network
     # Overrides default command so things don't shut down after the process ends.
