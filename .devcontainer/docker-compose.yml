@@ -22,6 +22,12 @@ services:
       - planka_planka-network
     # Overrides default command so things don't shut down after the process ends.
     command: sleep infinity
+    environment:
+      - PLANKA_URL=http://planka:1337/
+      - DATA_READER_USER=grafana_user
+      - DATA_READER_PASSWORD=passwd
+      - PROJECT_TO_READ='Important project'
+      - BOARD_TO_READ=Kanban
 networks:
   planka_planka-network:
     #name: planka-default

@@ -8,13 +8,14 @@ from dataclasses import dataclass, field
 import json
 from typing import List, Optional
 import requests
+import os
 
 # Connection information
-baseURL = 'http://planka:1337/'
-username = 'grafana_user'
-password = 'passwd'
-project_name = 'Important project'
-board_name = 'Kanban'
+baseURL = os.environ['PLANKA_URL']
+username = os.environ['DATA_READER_USER']
+password = os.environ['DATA_READER_PASSWORD']
+project_name = os.environ['PROJECT_TO_READ']
+board_name = os.environ['BOARD_TO_READ']
 
 class SocketToKanbanBoard():
     def __init__(self, baseURL, username, password):
