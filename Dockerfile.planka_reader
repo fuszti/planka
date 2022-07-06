@@ -1,0 +1,8 @@
+FROM python:3.9
+
+WORKDIR /app
+COPY data_dumper .
+
+RUN pip3 install -r /app/requirements.txt
+
+ENTRYPOINT while true; do python3 /app/dump.py; sleep 90; done;
