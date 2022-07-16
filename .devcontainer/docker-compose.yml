@@ -26,8 +26,9 @@ services:
       - PLANKA_URL=http://planka:1337/
       - DATA_READER_USER=grafana_user
       - DATA_READER_PASSWORD=passwd
-      - PROJECT_TO_READ='Important project'
+      - PROJECT_TO_READ=Important project
       - BOARD_TO_READ=Kanban
+      - PYTHONPATH=/workspace
 networks:
   planka_planka-network:
     #name: planka-default
